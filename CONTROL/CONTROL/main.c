@@ -6,66 +6,93 @@
  * Author : Jae
  */ 
 
-#define F_CPU		1000000UL
+#define F_CPU		8000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "ws2812b.h"
 
 #define UV_LOW			PORTA0
-#define UV_MID			PORTA1
+#define UV_MEDIUM		PORTA1
 #define UV_HIGH			PORTA2
 #define BUZZER			PORTB2
 #define STATE_LED		PORTA3
 #define WS2812_LED		PORTA7
+#define POW_LOW				0
+#define	POW_MEDIUM			1
+#define POW_HIGH			2
 
+#define ON_STATE		PORTA |= (1 << STATE_LED);
+#define ON_UV_LOW		PORTA |= ((1 << UV_LOW) & ~(1 << UV_MEDIUM) & ~(1 << UV_HIGH));
+#define ON_UV_MEDIUM	PORTA |= ((1 << UV_MEDIUM) & ~(1 << UV_LOW) & ~(1 << UV_HIGH));
+#define ON_UV_HIGH		PORTA |= ((1 << UV_HIGH) & ~(1 << UV_MEDIUM) & ~(1 << UV_LOW));
+#define OFF_UV			PORTA |= (~(1 << UV_LOW) & ~(1 << UV_MEDIUM) & ~(1 << UV_HIGH));
 
-#define ON_STATE		PORTA |= (1 << STATE_LED)
-#define ON_UV_LOW		PORTA |= (1 << UV_LOW) & ~(1 << UV_MID) & ~(1 << UV_HIGH)
-#define ON_UV_MID		PORTA |= (1 << UV_MID) & ~(1 << UV_LOW) & ~(1 << UV_HIGH)
-#define ON_UV_HIGH		PORTA |= (1 << UV_HIGH) & ~(1 << UV_LOW) & ~(1 << UV_MID)
-#define OFF_UV			PORTA |= ~(1 << UV_LOW) & ~(1 << UV_MID) & ~(1 << UV_HIGH)
+volatile uint8_t key_flag_ON = 0, key_flag_Power = 0;
+volatile uint8_t state_ON = 0, state_Power = 0, state = 0;
+volatile uint16_t cnt = 0;
 
-volatile char key_flag_ON = 0, key_flag_Power = 0;
-volatile char key_state_ON = 0;
-volatile char cnt = 0;
+void select_pow(uint8_t selection);
+
 
 ISR(PCINT1_vect)
 {
-	_delay_ms(50);
-	if(!(PINB & 0x01))
+	uint8_t check_pin = PINB & 0x03;		// PCINT8, PCINT9 check (PB0, PB1)
+ 	_delay_ms(100);						// debounce (if use cap(up to 100nF), remove this)
+	switch(check_pin)
 	{
-		if(!key_flag_ON)
-		{
-			key_flag_ON = 1;
-			key_state_ON = !key_state_ON;
-		}
-	}
-	else
-	{
-		key_flag_ON = 0;
-	}
-	if(!(PINB & 0x02))
-	{
-		if(!key_flag_Power)
-		{
-			key_flag_Power = 1;
-		}
-	}
-	else
-	{
-		key_flag_Power = 0;
+		case 0x01:						// PCINT8(PB0) Clicked
+			if(key_flag_ON == 0)
+			{
+				key_flag_ON = 1;
+				state_ON = !state_ON;
+			}
+			break;
+		case 0x02:						// PCINT9(PB1) Clicked
+			if(!key_flag_Power)
+			{
+				key_flag_Power = 1;
+				state_Power++;
+				if(state_Power>2)
+				{
+					state_Power=0;
+				}
+				select_pow(state_Power);
+			}
+			break;
+		default:						// key_flag init
+			key_flag_ON = 0;
+			key_flag_Power = 0;
+			break;
 	}
 }
 
-// 0.5s
 ISR(TIM0_COMPA_vect) 
-{
+{	
 	cnt++;
-	if(cnt >= 2)
+	if(cnt >= 1999)
 	{
 		PORTA ^= (1 << STATE_LED);
 		cnt = 0;
+	}
+}
+
+void select_pow(uint8_t selection)
+{
+	switch(selection)
+	{
+		case POW_LOW:
+		ON_UV_LOW;
+		ws2812b_show_color(1, 0, 255, 0);
+		break;
+		case POW_MEDIUM:
+		ON_UV_MEDIUM;
+		ws2812b_show_color(1, 255, 0, 0);		
+		break;
+		case POW_HIGH:
+		ON_UV_HIGH;
+		ws2812b_show_color(1, 0, 0, 255);
+		break;
 	}
 }
 
@@ -73,12 +100,8 @@ int main(void)
 {
 	DDRA |=	(1 << PORTA0) | (1 << PORTA1) | (1 << PORTA2) | (1 << PORTA3) | (1 << PORTA7);
 	DDRB |= (1 << PORTB2);
-	DDRB &=	~(1 << PORTB0) | ~(1 << PORTB1);
 
-	ON_STATE;		// 전원 입력 시 LED ON
-	
 	// PIN Change Interrupt
-	MCUCR |= (1 << ISC01);
 	GIMSK = (1 << PCIE1);
 	GIFR = (1 << PCIF1);
 	PCMSK1 = (1 << PCINT8) | (1 << PCINT9);
@@ -87,16 +110,23 @@ int main(void)
 	TCCR0A = (1 << WGM01);						// CTC MODE
 	TIMSK0 = (1 << OCIE0A);
 	OCR0A = 249;
+
+	ws2812b_init();
+	_delay_ms(10);
+	ws2812b_show_color(1, 0, 255, 0);
+
 	sei();
+	
     while (1) 
     {
-		if(key_state_ON == 1)
+		if(state_ON == 0)
 		{
-			TCCR0B = (1 << CS02) | (1 << CS00);		// 8000000 / 8*2*(1 + OCR0A)
+			ON_STATE;							// 상태 LED ON
+			TCCR0B = 0;							// 타이머 OFF		
 		}
 		else
 		{
-			TCCR0B = 0;								// 타이머 OFF
+			TCCR0B = (1 << CS01);				// 타이머 ON
 		}
-    }
+	}
 }

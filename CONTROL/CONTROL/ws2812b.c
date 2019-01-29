@@ -26,15 +26,25 @@ void ws2812b_op(char scan)
 		if(scan & 0x80)
 		{
 			PORTA |= (1 << PORTA7);
-			nop16;
+			nop3;
 			PORTA &= ~(1 << PORTA7);
 		}
 		else
 		{
 			PORTA |= (1 << PORTA7);
-			nop6;
+			nop;
 			PORTA &= ~(1 << PORTA7);
 		}
 		scan <<= 1;
+	}
+}
+
+void ws2812b_show_color(char num, char green, char red, char blue)
+{
+	for(char i=0; i<num; i++)
+	{
+		ws2812b_op(green);
+		ws2812b_op(red);
+		ws2812b_op(blue);
 	}
 }
