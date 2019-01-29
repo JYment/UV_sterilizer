@@ -11,44 +11,29 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "ws2812b.h"
-
-#define UV_LOW			PORTA0
-#define UV_MEDIUM		PORTA1
-#define UV_HIGH			PORTA2
-#define BUZZER			PORTB2
-#define STATE_LED		PORTA3
-#define WS2812_LED		PORTA7
-#define POW_LOW				0
-#define	POW_MEDIUM			1
-#define POW_HIGH			2
-
-#define ON_STATE		PORTA |= (1 << STATE_LED);
-#define ON_UV_LOW		PORTA |= ((1 << UV_LOW) & ~(1 << UV_MEDIUM) & ~(1 << UV_HIGH));
-#define ON_UV_MEDIUM	PORTA |= ((1 << UV_MEDIUM) & ~(1 << UV_LOW) & ~(1 << UV_HIGH));
-#define ON_UV_HIGH		PORTA |= ((1 << UV_HIGH) & ~(1 << UV_MEDIUM) & ~(1 << UV_LOW));
-#define OFF_UV			PORTA |= (~(1 << UV_LOW) & ~(1 << UV_MEDIUM) & ~(1 << UV_HIGH));
+#include "UV_def.h"
 
 volatile uint8_t key_flag_ON = 0, key_flag_Power = 0;
 volatile uint8_t state_ON = 0, state_Power = 0, state = 0;
 volatile uint16_t cnt = 0;
 
 void select_pow(uint8_t selection);
-
+void UV_util_init(void);
 
 ISR(PCINT1_vect)
 {
 	uint8_t check_pin = PINB & 0x03;		// PCINT8, PCINT9 check (PB0, PB1)
- 	_delay_ms(100);						// debounce (if use cap(up to 100nF), remove this)
+ 	_delay_ms(100);							// debounce (if use cap(up to 100nF), remove this)
 	switch(check_pin)
 	{
-		case 0x01:						// PCINT8(PB0) Clicked
+		case 0x01:							// PCINT8(PB0) Clicked
 			if(key_flag_ON == 0)
 			{
 				key_flag_ON = 1;
 				state_ON = !state_ON;
 			}
 			break;
-		case 0x02:						// PCINT9(PB1) Clicked
+		case 0x02:							// PCINT9(PB1) Clicked
 			if(!key_flag_Power)
 			{
 				key_flag_Power = 1;
@@ -60,7 +45,7 @@ ISR(PCINT1_vect)
 				select_pow(state_Power);
 			}
 			break;
-		default:						// key_flag init
+		default:							// key_flag init
 			key_flag_ON = 0;
 			key_flag_Power = 0;
 			break;
@@ -95,8 +80,7 @@ void select_pow(uint8_t selection)
 		break;
 	}
 }
-
-int main(void)
+void UV_util_init(void)
 {
 	DDRA |=	(1 << PORTA0) | (1 << PORTA1) | (1 << PORTA2) | (1 << PORTA3) | (1 << PORTA7);
 	DDRB |= (1 << PORTB2);
@@ -114,7 +98,11 @@ int main(void)
 	ws2812b_init();
 	_delay_ms(10);
 	ws2812b_show_color(1, 0, 255, 0);
+}
 
+int main(void)
+{
+	UV_util_init();
 	sei();
 	
     while (1) 
