@@ -3,31 +3,31 @@ CONTROL.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000244  00000000  00000000  00000074  2**1
+  0 .text         00000266  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  000002b8  2**0
+  1 .data         00000000  00800060  00800060  000002da  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000006  00800060  00800060  000002b8  2**0
+  2 .bss          00000006  00800060  00800060  000002da  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000002b8  2**0
+  3 .comment      00000030  00000000  00000000  000002da  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000002e8  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000030c  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000070  00000000  00000000  00000324  2**0
+  5 .debug_aranges 00000078  00000000  00000000  00000348  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000008dd  00000000  00000000  00000394  2**0
+  6 .debug_info   00000992  00000000  00000000  000003c0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 0000065b  00000000  00000000  00000c71  2**0
+  7 .debug_abbrev 00000697  00000000  00000000  00000d52  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000004e4  00000000  00000000  000012cc  2**0
+  8 .debug_line   00000539  00000000  00000000  000013e9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000134  00000000  00000000  000017b0  2**2
+  9 .debug_frame  00000144  00000000  00000000  00001924  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000003d0  00000000  00000000  000018e4  2**0
+ 10 .debug_str    000003ec  00000000  00000000  00001a68  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000430  00000000  00000000  00001cb4  2**0
+ 11 .debug_loc    000004ba  00000000  00000000  00001e54  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000050  00000000  00000000  000020e4  2**0
+ 12 .debug_ranges 00000058  00000000  00000000  0000230e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -36,7 +36,7 @@ Disassembly of section .text:
    0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
    2:	1f c0       	rjmp	.+62     	; 0x42 <__bad_interrupt>
    4:	1e c0       	rjmp	.+60     	; 0x42 <__bad_interrupt>
-   6:	61 c0       	rjmp	.+194    	; 0xca <__vector_3>
+   6:	71 c0       	rjmp	.+226    	; 0xea <__vector_3>
    8:	1c c0       	rjmp	.+56     	; 0x42 <__bad_interrupt>
    a:	1b c0       	rjmp	.+54     	; 0x42 <__bad_interrupt>
    c:	1a c0       	rjmp	.+52     	; 0x42 <__bad_interrupt>
@@ -72,8 +72,8 @@ Disassembly of section .text:
   38:	a6 36       	cpi	r26, 0x66	; 102
   3a:	b2 07       	cpc	r27, r18
   3c:	e1 f7       	brne	.-8      	; 0x36 <.do_clear_bss_loop>
-  3e:	ba d0       	rcall	.+372    	; 0x1b4 <main>
-  40:	ff c0       	rjmp	.+510    	; 0x240 <_exit>
+  3e:	cb d0       	rcall	.+406    	; 0x1d6 <main>
+  40:	10 c1       	rjmp	.+544    	; 0x262 <_exit>
 
 00000042 <__bad_interrupt>:
   42:	de cf       	rjmp	.-68     	; 0x0 <__vectors>
@@ -145,7 +145,7 @@ void select_pow(uint8_t selection)
   a4:	4f ef       	ldi	r20, 0xFF	; 255
   a6:	60 e0       	ldi	r22, 0x00	; 0
   a8:	81 e0       	ldi	r24, 0x01	; 1
-  aa:	af d0       	rcall	.+350    	; 0x20a <ws2812b_show_color>
+  aa:	c0 d0       	rcall	.+384    	; 0x22c <ws2812b_show_color>
 		break;
   ac:	08 95       	ret
 		case POW_MEDIUM:
@@ -156,7 +156,7 @@ void select_pow(uint8_t selection)
   b2:	40 e0       	ldi	r20, 0x00	; 0
   b4:	6f ef       	ldi	r22, 0xFF	; 255
   b6:	81 e0       	ldi	r24, 0x01	; 1
-  b8:	a8 d0       	rcall	.+336    	; 0x20a <ws2812b_show_color>
+  b8:	b9 d0       	rcall	.+370    	; 0x22c <ws2812b_show_color>
 		break;
   ba:	08 95       	ret
 		case POW_HIGH:
@@ -167,362 +167,409 @@ void select_pow(uint8_t selection)
   c0:	40 e0       	ldi	r20, 0x00	; 0
   c2:	60 e0       	ldi	r22, 0x00	; 0
   c4:	81 e0       	ldi	r24, 0x01	; 1
-  c6:	a1 d0       	rcall	.+322    	; 0x20a <ws2812b_show_color>
+  c6:	b2 d0       	rcall	.+356    	; 0x22c <ws2812b_show_color>
   c8:	08 95       	ret
 
-000000ca <__vector_3>:
+000000ca <bz_operation>:
+		break;
+	}
+}
 
-void select_pow(uint8_t selection);
-void UV_util_init(void);
-
-ISR(PCINT1_vect)
+void bz_operation()
 {
-  ca:	1f 92       	push	r1
-  cc:	0f 92       	push	r0
-  ce:	0f b6       	in	r0, 0x3f	; 63
-  d0:	0f 92       	push	r0
-  d2:	11 24       	eor	r1, r1
-  d4:	2f 93       	push	r18
-  d6:	3f 93       	push	r19
-  d8:	4f 93       	push	r20
-  da:	5f 93       	push	r21
-  dc:	6f 93       	push	r22
-  de:	7f 93       	push	r23
-  e0:	8f 93       	push	r24
-  e2:	9f 93       	push	r25
-  e4:	af 93       	push	r26
-  e6:	bf 93       	push	r27
-  e8:	ef 93       	push	r30
-  ea:	ff 93       	push	r31
-	uint8_t check_pin = PINB & 0x03;		// PCINT8, PCINT9 check (PB0, PB1)
-  ec:	86 b3       	in	r24, 0x16	; 22
+  ca:	28 ec       	ldi	r18, 0xC8	; 200
+  cc:	30 e0       	ldi	r19, 0x00	; 0
+	for(int a=0; a<200; a++)
+	{
+		PORTB ^= (1 << PORTB2);
+  ce:	94 e0       	ldi	r25, 0x04	; 4
+  d0:	88 b3       	in	r24, 0x18	; 24
+  d2:	89 27       	eor	r24, r25
+  d4:	88 bb       	out	0x18, r24	; 24
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  ee:	2f ef       	ldi	r18, 0xFF	; 255
-  f0:	30 e7       	ldi	r19, 0x70	; 112
-  f2:	92 e0       	ldi	r25, 0x02	; 2
-  f4:	21 50       	subi	r18, 0x01	; 1
-  f6:	30 40       	sbci	r19, 0x00	; 0
-  f8:	90 40       	sbci	r25, 0x00	; 0
-  fa:	e1 f7       	brne	.-8      	; 0xf4 <__vector_3+0x2a>
-  fc:	00 c0       	rjmp	.+0      	; 0xfe <__vector_3+0x34>
-  fe:	00 00       	nop
+  d6:	ef e1       	ldi	r30, 0x1F	; 31
+  d8:	f3 e0       	ldi	r31, 0x03	; 3
+  da:	31 97       	sbiw	r30, 0x01	; 1
+  dc:	f1 f7       	brne	.-4      	; 0xda <bz_operation+0x10>
+  de:	00 c0       	rjmp	.+0      	; 0xe0 <bz_operation+0x16>
+  e0:	00 00       	nop
+  e2:	21 50       	subi	r18, 0x01	; 1
+  e4:	31 09       	sbc	r19, r1
+	}
+}
+
+void bz_operation()
+{
+	for(int a=0; a<200; a++)
+  e6:	a1 f7       	brne	.-24     	; 0xd0 <bz_operation+0x6>
+	{
+		PORTB ^= (1 << PORTB2);
+		_delay_us(400);
+	}
+}
+  e8:	08 95       	ret
+
+000000ea <__vector_3>:
+void select_pow(uint8_t selection);
+void UV_util_init(void);
+void bz_operation(void);
+
+ISR(PCINT1_vect)
+{
+  ea:	1f 92       	push	r1
+  ec:	0f 92       	push	r0
+  ee:	0f b6       	in	r0, 0x3f	; 63
+  f0:	0f 92       	push	r0
+  f2:	11 24       	eor	r1, r1
+  f4:	2f 93       	push	r18
+  f6:	3f 93       	push	r19
+  f8:	4f 93       	push	r20
+  fa:	5f 93       	push	r21
+  fc:	6f 93       	push	r22
+  fe:	7f 93       	push	r23
+ 100:	8f 93       	push	r24
+ 102:	9f 93       	push	r25
+ 104:	af 93       	push	r26
+ 106:	bf 93       	push	r27
+ 108:	ef 93       	push	r30
+ 10a:	ff 93       	push	r31
+	uint8_t check_pin = PINB & 0x03;		// PCINT8, PCINT9 check (PB0, PB1)
+ 10c:	86 b3       	in	r24, 0x16	; 22
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 10e:	2f ef       	ldi	r18, 0xFF	; 255
+ 110:	30 e7       	ldi	r19, 0x70	; 112
+ 112:	92 e0       	ldi	r25, 0x02	; 2
+ 114:	21 50       	subi	r18, 0x01	; 1
+ 116:	30 40       	sbci	r19, 0x00	; 0
+ 118:	90 40       	sbci	r25, 0x00	; 0
+ 11a:	e1 f7       	brne	.-8      	; 0x114 <__vector_3+0x2a>
+ 11c:	00 c0       	rjmp	.+0      	; 0x11e <__vector_3+0x34>
+ 11e:	00 00       	nop
  	_delay_ms(100);							// debounce (if use cap(up to 100nF), remove this)
 	switch(check_pin)
- 100:	83 70       	andi	r24, 0x03	; 3
- 102:	81 30       	cpi	r24, 0x01	; 1
- 104:	19 f0       	breq	.+6      	; 0x10c <__vector_3+0x42>
- 106:	82 30       	cpi	r24, 0x02	; 2
- 108:	79 f0       	breq	.+30     	; 0x128 <__vector_3+0x5e>
- 10a:	24 c0       	rjmp	.+72     	; 0x154 <__vector_3+0x8a>
+ 120:	83 70       	andi	r24, 0x03	; 3
+ 122:	81 30       	cpi	r24, 0x01	; 1
+ 124:	89 f0       	breq	.+34     	; 0x148 <__vector_3+0x5e>
+ 126:	82 30       	cpi	r24, 0x02	; 2
+ 128:	31 f5       	brne	.+76     	; 0x176 <__stack+0x17>
 	{
-		case 0x01:							// PCINT8(PB0) Clicked
+		case 0x02:							// PCINT8(PB0) Clicked
 			if(key_flag_ON == 0)
- 10c:	80 91 65 00 	lds	r24, 0x0065	; 0x800065 <key_flag_ON>
- 110:	81 11       	cpse	r24, r1
- 112:	24 c0       	rjmp	.+72     	; 0x15c <__vector_3+0x92>
+ 12a:	80 91 65 00 	lds	r24, 0x0065	; 0x800065 <key_flag_ON>
+ 12e:	81 11       	cpse	r24, r1
+ 130:	26 c0       	rjmp	.+76     	; 0x17e <__stack+0x1f>
 			{
 				key_flag_ON = 1;
- 114:	81 e0       	ldi	r24, 0x01	; 1
- 116:	80 93 65 00 	sts	0x0065, r24	; 0x800065 <key_flag_ON>
+ 132:	81 e0       	ldi	r24, 0x01	; 1
+ 134:	80 93 65 00 	sts	0x0065, r24	; 0x800065 <key_flag_ON>
 				state_ON = !state_ON;
- 11a:	90 91 63 00 	lds	r25, 0x0063	; 0x800063 <state_ON>
- 11e:	91 11       	cpse	r25, r1
- 120:	80 e0       	ldi	r24, 0x00	; 0
- 122:	80 93 63 00 	sts	0x0063, r24	; 0x800063 <state_ON>
- 126:	1a c0       	rjmp	.+52     	; 0x15c <__vector_3+0x92>
+ 138:	90 91 63 00 	lds	r25, 0x0063	; 0x800063 <state_ON>
+ 13c:	91 11       	cpse	r25, r1
+ 13e:	80 e0       	ldi	r24, 0x00	; 0
+ 140:	80 93 63 00 	sts	0x0063, r24	; 0x800063 <state_ON>
+				bz_operation();
+ 144:	c2 df       	rcall	.-124    	; 0xca <bz_operation>
+ 146:	1b c0       	rjmp	.+54     	; 0x17e <__stack+0x1f>
 			}
 			break;
-		case 0x02:							// PCINT9(PB1) Clicked
+		case 0x01:							// PCINT9(PB1) Clicked
 			if(!key_flag_Power)
- 128:	80 91 64 00 	lds	r24, 0x0064	; 0x800064 <key_flag_Power>
- 12c:	81 11       	cpse	r24, r1
- 12e:	16 c0       	rjmp	.+44     	; 0x15c <__vector_3+0x92>
+ 148:	80 91 64 00 	lds	r24, 0x0064	; 0x800064 <key_flag_Power>
+ 14c:	81 11       	cpse	r24, r1
+ 14e:	17 c0       	rjmp	.+46     	; 0x17e <__stack+0x1f>
 			{
 				key_flag_Power = 1;
- 130:	81 e0       	ldi	r24, 0x01	; 1
- 132:	80 93 64 00 	sts	0x0064, r24	; 0x800064 <key_flag_Power>
+ 150:	81 e0       	ldi	r24, 0x01	; 1
+ 152:	80 93 64 00 	sts	0x0064, r24	; 0x800064 <key_flag_Power>
 				state_Power++;
- 136:	80 91 62 00 	lds	r24, 0x0062	; 0x800062 <state_Power>
- 13a:	8f 5f       	subi	r24, 0xFF	; 255
- 13c:	80 93 62 00 	sts	0x0062, r24	; 0x800062 <state_Power>
+ 156:	80 91 62 00 	lds	r24, 0x0062	; 0x800062 <state_Power>
+ 15a:	8f 5f       	subi	r24, 0xFF	; 255
+ 15c:	80 93 62 00 	sts	0x0062, r24	; 0x800062 <state_Power>
 				if(state_Power>2)
- 140:	80 91 62 00 	lds	r24, 0x0062	; 0x800062 <state_Power>
- 144:	83 30       	cpi	r24, 0x03	; 3
- 146:	10 f0       	brcs	.+4      	; 0x14c <__vector_3+0x82>
+ 160:	80 91 62 00 	lds	r24, 0x0062	; 0x800062 <state_Power>
+ 164:	83 30       	cpi	r24, 0x03	; 3
+ 166:	10 f0       	brcs	.+4      	; 0x16c <__stack+0xd>
 				{
 					state_Power=0;
- 148:	10 92 62 00 	sts	0x0062, r1	; 0x800062 <state_Power>
+ 168:	10 92 62 00 	sts	0x0062, r1	; 0x800062 <state_Power>
 				}
 				select_pow(state_Power);
- 14c:	80 91 62 00 	lds	r24, 0x0062	; 0x800062 <state_Power>
- 150:	a1 df       	rcall	.-190    	; 0x94 <select_pow>
- 152:	04 c0       	rjmp	.+8      	; 0x15c <__vector_3+0x92>
+ 16c:	80 91 62 00 	lds	r24, 0x0062	; 0x800062 <state_Power>
+ 170:	91 df       	rcall	.-222    	; 0x94 <select_pow>
+				bz_operation();
+ 172:	ab df       	rcall	.-170    	; 0xca <bz_operation>
+ 174:	04 c0       	rjmp	.+8      	; 0x17e <__stack+0x1f>
 			}
 			break;
 		default:							// key_flag init
 			key_flag_ON = 0;
- 154:	10 92 65 00 	sts	0x0065, r1	; 0x800065 <key_flag_ON>
+ 176:	10 92 65 00 	sts	0x0065, r1	; 0x800065 <key_flag_ON>
 			key_flag_Power = 0;
- 158:	10 92 64 00 	sts	0x0064, r1	; 0x800064 <key_flag_Power>
+ 17a:	10 92 64 00 	sts	0x0064, r1	; 0x800064 <key_flag_Power>
 			break;
 	}
 }
- 15c:	ff 91       	pop	r31
- 15e:	ef 91       	pop	r30
- 160:	bf 91       	pop	r27
- 162:	af 91       	pop	r26
- 164:	9f 91       	pop	r25
- 166:	8f 91       	pop	r24
- 168:	7f 91       	pop	r23
- 16a:	6f 91       	pop	r22
- 16c:	5f 91       	pop	r21
- 16e:	4f 91       	pop	r20
- 170:	3f 91       	pop	r19
- 172:	2f 91       	pop	r18
- 174:	0f 90       	pop	r0
- 176:	0f be       	out	0x3f, r0	; 63
- 178:	0f 90       	pop	r0
- 17a:	1f 90       	pop	r1
- 17c:	18 95       	reti
+ 17e:	ff 91       	pop	r31
+ 180:	ef 91       	pop	r30
+ 182:	bf 91       	pop	r27
+ 184:	af 91       	pop	r26
+ 186:	9f 91       	pop	r25
+ 188:	8f 91       	pop	r24
+ 18a:	7f 91       	pop	r23
+ 18c:	6f 91       	pop	r22
+ 18e:	5f 91       	pop	r21
+ 190:	4f 91       	pop	r20
+ 192:	3f 91       	pop	r19
+ 194:	2f 91       	pop	r18
+ 196:	0f 90       	pop	r0
+ 198:	0f be       	out	0x3f, r0	; 63
+ 19a:	0f 90       	pop	r0
+ 19c:	1f 90       	pop	r1
+ 19e:	18 95       	reti
 
-0000017e <UV_util_init>:
-		break;
+000001a0 <UV_util_init>:
 	}
 }
+
 void UV_util_init(void)
 {
 	DDRA |=	(1 << PORTA0) | (1 << PORTA1) | (1 << PORTA2) | (1 << PORTA3) | (1 << PORTA7);
- 17e:	8a b3       	in	r24, 0x1a	; 26
- 180:	8f 68       	ori	r24, 0x8F	; 143
- 182:	8a bb       	out	0x1a, r24	; 26
+ 1a0:	8a b3       	in	r24, 0x1a	; 26
+ 1a2:	8f 68       	ori	r24, 0x8F	; 143
+ 1a4:	8a bb       	out	0x1a, r24	; 26
 	DDRB |= (1 << PORTB2);
- 184:	ba 9a       	sbi	0x17, 2	; 23
+ 1a6:	ba 9a       	sbi	0x17, 2	; 23
 
 	// PIN Change Interrupt
 	GIMSK = (1 << PCIE1);
- 186:	80 e2       	ldi	r24, 0x20	; 32
- 188:	8b bf       	out	0x3b, r24	; 59
+ 1a8:	80 e2       	ldi	r24, 0x20	; 32
+ 1aa:	8b bf       	out	0x3b, r24	; 59
 	GIFR = (1 << PCIF1);
- 18a:	8a bf       	out	0x3a, r24	; 58
+ 1ac:	8a bf       	out	0x3a, r24	; 58
 	PCMSK1 = (1 << PCINT8) | (1 << PCINT9);
- 18c:	83 e0       	ldi	r24, 0x03	; 3
- 18e:	80 bd       	out	0x20, r24	; 32
+ 1ae:	83 e0       	ldi	r24, 0x03	; 3
+ 1b0:	80 bd       	out	0x20, r24	; 32
 	
 	//TIMER0 8bit
 	TCCR0A = (1 << WGM01);						// CTC MODE
- 190:	82 e0       	ldi	r24, 0x02	; 2
- 192:	80 bf       	out	0x30, r24	; 48
+ 1b2:	82 e0       	ldi	r24, 0x02	; 2
+ 1b4:	80 bf       	out	0x30, r24	; 48
 	TIMSK0 = (1 << OCIE0A);
- 194:	89 bf       	out	0x39, r24	; 57
+ 1b6:	89 bf       	out	0x39, r24	; 57
 	OCR0A = 249;
- 196:	89 ef       	ldi	r24, 0xF9	; 249
- 198:	86 bf       	out	0x36, r24	; 54
+ 1b8:	89 ef       	ldi	r24, 0xF9	; 249
+ 1ba:	86 bf       	out	0x36, r24	; 54
 
 	ws2812b_init();
- 19a:	28 d0       	rcall	.+80     	; 0x1ec <ws2812b_init>
- 19c:	8f e1       	ldi	r24, 0x1F	; 31
- 19e:	9e e4       	ldi	r25, 0x4E	; 78
- 1a0:	01 97       	sbiw	r24, 0x01	; 1
- 1a2:	f1 f7       	brne	.-4      	; 0x1a0 <UV_util_init+0x22>
- 1a4:	00 c0       	rjmp	.+0      	; 0x1a6 <UV_util_init+0x28>
- 1a6:	00 00       	nop
+ 1bc:	28 d0       	rcall	.+80     	; 0x20e <ws2812b_init>
+ 1be:	8f e1       	ldi	r24, 0x1F	; 31
+ 1c0:	9e e4       	ldi	r25, 0x4E	; 78
+ 1c2:	01 97       	sbiw	r24, 0x01	; 1
+ 1c4:	f1 f7       	brne	.-4      	; 0x1c2 <UV_util_init+0x22>
+ 1c6:	00 c0       	rjmp	.+0      	; 0x1c8 <UV_util_init+0x28>
+ 1c8:	00 00       	nop
 	_delay_ms(10);
 	ws2812b_show_color(1, 0, 255, 0);
- 1a8:	20 e0       	ldi	r18, 0x00	; 0
- 1aa:	4f ef       	ldi	r20, 0xFF	; 255
- 1ac:	60 e0       	ldi	r22, 0x00	; 0
- 1ae:	81 e0       	ldi	r24, 0x01	; 1
- 1b0:	2c d0       	rcall	.+88     	; 0x20a <ws2812b_show_color>
- 1b2:	08 95       	ret
+ 1ca:	20 e0       	ldi	r18, 0x00	; 0
+ 1cc:	4f ef       	ldi	r20, 0xFF	; 255
+ 1ce:	60 e0       	ldi	r22, 0x00	; 0
+ 1d0:	81 e0       	ldi	r24, 0x01	; 1
+ 1d2:	2c d0       	rcall	.+88     	; 0x22c <ws2812b_show_color>
+ 1d4:	08 95       	ret
 
-000001b4 <main>:
+000001d6 <main>:
 }
 
 int main(void)
 {
 	UV_util_init();
- 1b4:	e4 df       	rcall	.-56     	; 0x17e <UV_util_init>
+ 1d6:	e4 df       	rcall	.-56     	; 0x1a0 <UV_util_init>
 	sei();
- 1b6:	78 94       	sei
+ 1d8:	78 94       	sei
 			ON_STATE;							// 상태 LED ON
 			TCCR0B = 0;							// 타이머 OFF		
 		}
 		else
 		{
 			TCCR0B = (1 << CS01);				// 타이머 ON
- 1b8:	92 e0       	ldi	r25, 0x02	; 2
+ 1da:	92 e0       	ldi	r25, 0x02	; 2
 	UV_util_init();
 	sei();
 	
     while (1) 
     {
 		if(state_ON == 0)
- 1ba:	80 91 63 00 	lds	r24, 0x0063	; 0x800063 <state_ON>
- 1be:	81 11       	cpse	r24, r1
- 1c0:	03 c0       	rjmp	.+6      	; 0x1c8 <main+0x14>
+ 1dc:	80 91 63 00 	lds	r24, 0x0063	; 0x800063 <state_ON>
+ 1e0:	81 11       	cpse	r24, r1
+ 1e2:	03 c0       	rjmp	.+6      	; 0x1ea <main+0x14>
 		{
 			ON_STATE;							// 상태 LED ON
- 1c2:	db 9a       	sbi	0x1b, 3	; 27
+ 1e4:	db 9a       	sbi	0x1b, 3	; 27
 			TCCR0B = 0;							// 타이머 OFF		
- 1c4:	13 be       	out	0x33, r1	; 51
- 1c6:	f9 cf       	rjmp	.-14     	; 0x1ba <main+0x6>
+ 1e6:	13 be       	out	0x33, r1	; 51
+ 1e8:	f9 cf       	rjmp	.-14     	; 0x1dc <main+0x6>
 		}
 		else
 		{
 			TCCR0B = (1 << CS01);				// 타이머 ON
- 1c8:	93 bf       	out	0x33, r25	; 51
- 1ca:	f7 cf       	rjmp	.-18     	; 0x1ba <main+0x6>
+ 1ea:	93 bf       	out	0x33, r25	; 51
+ 1ec:	f7 cf       	rjmp	.-18     	; 0x1dc <main+0x6>
 
-000001cc <ws2812b_op>:
+000001ee <ws2812b_op>:
 		ws2812b_op(0);
 	}
 }
 
 void ws2812b_op(char scan)
 {
- 1cc:	98 e0       	ldi	r25, 0x08	; 8
+ 1ee:	98 e0       	ldi	r25, 0x08	; 8
 	char i;
 	for(i=0; i<8; i++)
 	{
 		if(scan & 0x80)
- 1ce:	88 23       	and	r24, r24
- 1d0:	34 f4       	brge	.+12     	; 0x1de <ws2812b_op+0x12>
+ 1f0:	88 23       	and	r24, r24
+ 1f2:	34 f4       	brge	.+12     	; 0x200 <ws2812b_op+0x12>
 		{
 			PORTA |= (1 << PORTA7);
- 1d2:	df 9a       	sbi	0x1b, 7	; 27
+ 1f4:	df 9a       	sbi	0x1b, 7	; 27
 			nop3;
- 1d4:	00 00       	nop
- 1d6:	00 00       	nop
- 1d8:	00 00       	nop
+ 1f6:	00 00       	nop
+ 1f8:	00 00       	nop
+ 1fa:	00 00       	nop
 			PORTA &= ~(1 << PORTA7);
- 1da:	df 98       	cbi	0x1b, 7	; 27
- 1dc:	03 c0       	rjmp	.+6      	; 0x1e4 <ws2812b_op+0x18>
+ 1fc:	df 98       	cbi	0x1b, 7	; 27
+ 1fe:	03 c0       	rjmp	.+6      	; 0x206 <ws2812b_op+0x18>
 		}
 		else
 		{
 			PORTA |= (1 << PORTA7);
- 1de:	df 9a       	sbi	0x1b, 7	; 27
+ 200:	df 9a       	sbi	0x1b, 7	; 27
 			nop;
- 1e0:	00 00       	nop
+ 202:	00 00       	nop
 			PORTA &= ~(1 << PORTA7);
- 1e2:	df 98       	cbi	0x1b, 7	; 27
+ 204:	df 98       	cbi	0x1b, 7	; 27
 		}
 		scan <<= 1;
- 1e4:	88 0f       	add	r24, r24
- 1e6:	91 50       	subi	r25, 0x01	; 1
+ 206:	88 0f       	add	r24, r24
+ 208:	91 50       	subi	r25, 0x01	; 1
 }
 
 void ws2812b_op(char scan)
 {
 	char i;
 	for(i=0; i<8; i++)
- 1e8:	91 f7       	brne	.-28     	; 0x1ce <ws2812b_op+0x2>
+ 20a:	91 f7       	brne	.-28     	; 0x1f0 <ws2812b_op+0x2>
 			nop;
 			PORTA &= ~(1 << PORTA7);
 		}
 		scan <<= 1;
 	}
 }
- 1ea:	08 95       	ret
+ 20c:	08 95       	ret
 
-000001ec <ws2812b_init>:
+0000020e <ws2812b_init>:
 
 #include <avr/io.h>
 #include "ws2812b.h"
 
 void ws2812b_init(void)
 {
- 1ec:	cf 93       	push	r28
- 1ee:	df 93       	push	r29
- 1f0:	c3 e0       	ldi	r28, 0x03	; 3
- 1f2:	d0 e0       	ldi	r29, 0x00	; 0
+ 20e:	cf 93       	push	r28
+ 210:	df 93       	push	r29
+ 212:	c3 e0       	ldi	r28, 0x03	; 3
+ 214:	d0 e0       	ldi	r29, 0x00	; 0
 	for(int i=0; i<ws2812b_NUM; i++)
 	{
 		ws2812b_op(0);
- 1f4:	80 e0       	ldi	r24, 0x00	; 0
- 1f6:	ea df       	rcall	.-44     	; 0x1cc <ws2812b_op>
+ 216:	80 e0       	ldi	r24, 0x00	; 0
+ 218:	ea df       	rcall	.-44     	; 0x1ee <ws2812b_op>
 		ws2812b_op(0);
- 1f8:	80 e0       	ldi	r24, 0x00	; 0
- 1fa:	e8 df       	rcall	.-48     	; 0x1cc <ws2812b_op>
+ 21a:	80 e0       	ldi	r24, 0x00	; 0
+ 21c:	e8 df       	rcall	.-48     	; 0x1ee <ws2812b_op>
 		ws2812b_op(0);
- 1fc:	80 e0       	ldi	r24, 0x00	; 0
- 1fe:	e6 df       	rcall	.-52     	; 0x1cc <ws2812b_op>
- 200:	21 97       	sbiw	r28, 0x01	; 1
+ 21e:	80 e0       	ldi	r24, 0x00	; 0
+ 220:	e6 df       	rcall	.-52     	; 0x1ee <ws2812b_op>
+ 222:	21 97       	sbiw	r28, 0x01	; 1
 #include <avr/io.h>
 #include "ws2812b.h"
 
 void ws2812b_init(void)
 {
 	for(int i=0; i<ws2812b_NUM; i++)
- 202:	c1 f7       	brne	.-16     	; 0x1f4 <ws2812b_init+0x8>
+ 224:	c1 f7       	brne	.-16     	; 0x216 <ws2812b_init+0x8>
 	{
 		ws2812b_op(0);
 		ws2812b_op(0);
 		ws2812b_op(0);
 	}
 }
- 204:	df 91       	pop	r29
- 206:	cf 91       	pop	r28
- 208:	08 95       	ret
+ 226:	df 91       	pop	r29
+ 228:	cf 91       	pop	r28
+ 22a:	08 95       	ret
 
-0000020a <ws2812b_show_color>:
+0000022c <ws2812b_show_color>:
 		scan <<= 1;
 	}
 }
 
 void ws2812b_show_color(char num, char green, char red, char blue)
 {
- 20a:	ff 92       	push	r15
- 20c:	0f 93       	push	r16
- 20e:	1f 93       	push	r17
- 210:	cf 93       	push	r28
- 212:	df 93       	push	r29
+ 22c:	ff 92       	push	r15
+ 22e:	0f 93       	push	r16
+ 230:	1f 93       	push	r17
+ 232:	cf 93       	push	r28
+ 234:	df 93       	push	r29
 	for(char i=0; i<num; i++)
- 214:	88 23       	and	r24, r24
- 216:	71 f0       	breq	.+28     	; 0x234 <ws2812b_show_color+0x2a>
- 218:	f2 2e       	mov	r15, r18
- 21a:	04 2f       	mov	r16, r20
- 21c:	16 2f       	mov	r17, r22
- 21e:	d8 2f       	mov	r29, r24
- 220:	c0 e0       	ldi	r28, 0x00	; 0
+ 236:	88 23       	and	r24, r24
+ 238:	71 f0       	breq	.+28     	; 0x256 <ws2812b_show_color+0x2a>
+ 23a:	f2 2e       	mov	r15, r18
+ 23c:	04 2f       	mov	r16, r20
+ 23e:	16 2f       	mov	r17, r22
+ 240:	d8 2f       	mov	r29, r24
+ 242:	c0 e0       	ldi	r28, 0x00	; 0
 	{
 		ws2812b_op(green);
- 222:	81 2f       	mov	r24, r17
- 224:	d3 df       	rcall	.-90     	; 0x1cc <ws2812b_op>
+ 244:	81 2f       	mov	r24, r17
+ 246:	d3 df       	rcall	.-90     	; 0x1ee <ws2812b_op>
 		ws2812b_op(red);
- 226:	80 2f       	mov	r24, r16
- 228:	d1 df       	rcall	.-94     	; 0x1cc <ws2812b_op>
+ 248:	80 2f       	mov	r24, r16
+ 24a:	d1 df       	rcall	.-94     	; 0x1ee <ws2812b_op>
 		ws2812b_op(blue);
- 22a:	8f 2d       	mov	r24, r15
- 22c:	cf df       	rcall	.-98     	; 0x1cc <ws2812b_op>
+ 24c:	8f 2d       	mov	r24, r15
+ 24e:	cf df       	rcall	.-98     	; 0x1ee <ws2812b_op>
 	}
 }
 
 void ws2812b_show_color(char num, char green, char red, char blue)
 {
 	for(char i=0; i<num; i++)
- 22e:	cf 5f       	subi	r28, 0xFF	; 255
- 230:	dc 13       	cpse	r29, r28
- 232:	f7 cf       	rjmp	.-18     	; 0x222 <ws2812b_show_color+0x18>
+ 250:	cf 5f       	subi	r28, 0xFF	; 255
+ 252:	dc 13       	cpse	r29, r28
+ 254:	f7 cf       	rjmp	.-18     	; 0x244 <ws2812b_show_color+0x18>
 	{
 		ws2812b_op(green);
 		ws2812b_op(red);
 		ws2812b_op(blue);
 	}
- 234:	df 91       	pop	r29
- 236:	cf 91       	pop	r28
- 238:	1f 91       	pop	r17
- 23a:	0f 91       	pop	r16
- 23c:	ff 90       	pop	r15
- 23e:	08 95       	ret
+ 256:	df 91       	pop	r29
+ 258:	cf 91       	pop	r28
+ 25a:	1f 91       	pop	r17
+ 25c:	0f 91       	pop	r16
+ 25e:	ff 90       	pop	r15
+ 260:	08 95       	ret
 
-00000240 <_exit>:
- 240:	f8 94       	cli
+00000262 <_exit>:
+ 262:	f8 94       	cli
 
-00000242 <__stop_program>:
- 242:	ff cf       	rjmp	.-2      	; 0x242 <__stop_program>
+00000264 <__stop_program>:
+ 264:	ff cf       	rjmp	.-2      	; 0x264 <__stop_program>

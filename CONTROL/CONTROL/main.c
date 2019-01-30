@@ -19,6 +19,7 @@ volatile uint16_t cnt = 0;
 
 void select_pow(uint8_t selection);
 void UV_util_init(void);
+void bz_operation(void);
 
 ISR(PCINT1_vect)
 {
@@ -26,14 +27,15 @@ ISR(PCINT1_vect)
  	_delay_ms(100);							// debounce (if use cap(up to 100nF), remove this)
 	switch(check_pin)
 	{
-		case 0x01:							// PCINT8(PB0) Clicked
+		case 0x02:							// PCINT8(PB0) Clicked
 			if(key_flag_ON == 0)
 			{
 				key_flag_ON = 1;
 				state_ON = !state_ON;
+				bz_operation();
 			}
 			break;
-		case 0x02:							// PCINT9(PB1) Clicked
+		case 0x01:							// PCINT9(PB1) Clicked
 			if(!key_flag_Power)
 			{
 				key_flag_Power = 1;
@@ -43,6 +45,7 @@ ISR(PCINT1_vect)
 					state_Power=0;
 				}
 				select_pow(state_Power);
+				bz_operation();
 			}
 			break;
 		default:							// key_flag init
@@ -80,6 +83,16 @@ void select_pow(uint8_t selection)
 		break;
 	}
 }
+
+void bz_operation()
+{
+	for(int a=0; a<200; a++)
+	{
+		PORTB ^= (1 << PORTB2);
+		_delay_us(400);
+	}
+}
+
 void UV_util_init(void)
 {
 	DDRA |=	(1 << PORTA0) | (1 << PORTA1) | (1 << PORTA2) | (1 << PORTA3) | (1 << PORTA7);
