@@ -9,6 +9,9 @@
 #ifndef UV_DEF_H_
 #define UV_DEF_H_
 
+#define ON				1
+#define OFF				0
+
 #define UV_LOW			PORTA0
 #define UV_MEDIUM		PORTA1
 #define UV_HIGH			PORTA2
@@ -23,10 +26,7 @@
 #define TOUCH_FLAG_ON		0x02					// PCINT9(PB1)
 
 #define ON_STATE		PORTA |= (1 << STATE_LED);
-#define ON_UV_LOW		PORTA |= ((1 << UV_LOW) & ~(1 << UV_MEDIUM) & ~(1 << UV_HIGH));
-#define ON_UV_MEDIUM	PORTA |= ((1 << UV_MEDIUM) & ~(1 << UV_LOW) & ~(1 << UV_HIGH));
-#define ON_UV_HIGH		PORTA |= ((1 << UV_HIGH) & ~(1 << UV_MEDIUM) & ~(1 << UV_LOW));
-#define OFF_UV			PORTA |= (~(1 << UV_LOW) & ~(1 << UV_MEDIUM) & ~(1 << UV_HIGH));
+
 
 
 #endif /* UV_DEF_H_ */

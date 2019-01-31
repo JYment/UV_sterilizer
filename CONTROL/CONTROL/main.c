@@ -17,9 +17,9 @@
 
 volatile uint8_t key_flag_ON = 0, key_flag_Power = 0;
 volatile uint8_t state_ON = 0, state_Power = 0, state = 0;
-volatile uint16_t cnt = 0;
+volatile uint16_t cnt = 0, sec_cnt = 0;
 
-void select_pow(uint8_t selection);
+void select_pow_color(uint8_t selection);
 void UV_util_init(void);
 void bz_operation(uint16_t hz, uint16_t count);
 
@@ -46,7 +46,7 @@ ISR(PCINT1_vect)
 				{
 					state_Power=0;
 				}
-				select_pow(state_Power);
+				select_pow_color(state_Power);
 				bz_operation(NOTE_C6, 150);
 			}
 			break;
@@ -60,27 +60,63 @@ ISR(PCINT1_vect)
 ISR(TIM0_COMPA_vect) 
 {	
 	cnt++;
-	if(cnt >= 1499)
+	if(state_ON == ON)
 	{
-		PORTA ^= (1 << STATE_LED);
-		cnt = 0;
+		if(cnt >= 1999)								// 0.5s CNT
+		{	
+			if(sec_cnt < 1800)						// 900s (15min) CNT
+			{
+				PORTA ^= (1 << STATE_LED);
+				switch(state_Power)
+				{
+					case POW_LOW:
+						PORTA |= (1 << PORTA0);
+						PORTA &= ~(1 << PORTA1);
+						PORTA &= ~(1 << PORTA2);
+						break;
+					case POW_MEDIUM:
+						PORTA |= (1 << PORTA1);
+						PORTA &= ~(1 << PORTA0);
+						PORTA &= ~(1 << PORTA2);
+						break;
+					case POW_HIGH:
+						PORTA |= (1 << PORTA2);
+						PORTA &= ~(1 << PORTA1);
+						PORTA &= ~(1 << PORTA0);
+						break;
+				}
+				
+				sec_cnt++;
+			}
+			else
+			{
+				state_ON = OFF;
+				sec_cnt = 0;
+			}
+			cnt = 0;
+		}
+	}
+	else
+	{
+		PORTA &= ~(1 << PORTA2);
+		PORTA &= ~(1 << PORTA1);
+		PORTA &= ~(1 << PORTA0);
+		sec_cnt = 0;	
+		cnt = 0;	
 	}
 }
 
-void select_pow(uint8_t selection)
+void select_pow_color(uint8_t selection)
 {
 	switch(selection)
 	{
 		case POW_LOW:
-		ON_UV_LOW;
 		ws2812b_show_color(1, 0, 255, 0);
 		break;
 		case POW_MEDIUM:
-		ON_UV_MEDIUM;
 		ws2812b_show_color(1, 255, 0, 0);		
 		break;
 		case POW_HIGH:
-		ON_UV_HIGH;
 		ws2812b_show_color(1, 0, 0, 255);
 		break;
 	}
@@ -127,9 +163,12 @@ int main(void)
 	
     while (1) 
     {
-		if(state_ON == 0)
+		if(state_ON == OFF)
 		{
 			ON_STATE;							// 상태 LED ON
+			PORTA &= ~(1 << PORTA0);
+			PORTA &= ~(1 << PORTA1);
+			PORTA &= ~(1 << PORTA2);
 			TCCR0B = 0;							// 타이머 OFF		
 		}
 		else
