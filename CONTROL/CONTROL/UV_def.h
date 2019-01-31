@@ -19,6 +19,9 @@
 #define	POW_MEDIUM			1
 #define POW_HIGH			2
 
+#define TOUCH_FLAG_POW		0x01					// PCINT8(PB0)
+#define TOUCH_FLAG_ON		0x02					// PCINT9(PB1)
+
 #define ON_STATE		PORTA |= (1 << STATE_LED);
 #define ON_UV_LOW		PORTA |= ((1 << UV_LOW) & ~(1 << UV_MEDIUM) & ~(1 << UV_HIGH));
 #define ON_UV_MEDIUM	PORTA |= ((1 << UV_MEDIUM) & ~(1 << UV_LOW) & ~(1 << UV_HIGH));
