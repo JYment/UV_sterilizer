@@ -13,6 +13,7 @@
 #include <util/delay.h>
 #include "ws2812b.h"
 #include "UV_def.h"
+#include "pitches.h"
 
 volatile uint8_t key_flag_ON = 0, key_flag_Power = 0;
 volatile uint8_t state_ON = 0, state_Power = 0, state = 0;
@@ -33,7 +34,7 @@ ISR(PCINT1_vect)
 			{
 				key_flag_ON = 1;
 				state_ON = !state_ON;
-				bz_operation(1047, 150);
+				bz_operation(NOTE_C6, 150);
 			}
 			break;
 		case TOUCH_FLAG_POW:						// PCINT8(PB0) Clicked
@@ -46,7 +47,7 @@ ISR(PCINT1_vect)
 					state_Power=0;
 				}
 				select_pow(state_Power);
-				bz_operation(1047, 150);
+				bz_operation(NOTE_C6, 150);
 			}
 			break;
 		default:									// key_flag init
@@ -92,7 +93,7 @@ void bz_operation(uint16_t hz, uint16_t count)
 	us = (1000.0/(2*hz) - ms) * 1000;				// 1개 펄스의 ON 또는 OFF의 us 단위 시간
 	for(i=0; i<count; i++)
 	{
-		PORTB ^= (1 << PORTB2);						// BUzzer ON - OFF
+		PORTB ^= (1 << PORTB2);						// Buzzer ON - OFF
 		_delay_us(us);								// (us)us 동안 delay
 	}
 }
@@ -121,6 +122,7 @@ void UV_util_init(void)
 int main(void)
 {
 	UV_util_init();
+	
 	sei();
 	
     while (1) 

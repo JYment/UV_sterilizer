@@ -249,7 +249,7 @@ void bz_operation(uint16_t hz, uint16_t count)
  14c:	09 f4       	brne	.+2      	; 0x150 <bz_operation+0x86>
  14e:	9d c0       	rjmp	.+314    	; 0x28a <__stack+0x12b>
 	{
-		PORTB ^= (1 << PORTB2);						// BUzzer ON - OFF
+		PORTB ^= (1 << PORTB2);						// Buzzer ON - OFF
 		_delay_us(us);								// (us)us 동안 delay
  150:	80 e0       	ldi	r24, 0x00	; 0
  152:	90 e0       	ldi	r25, 0x00	; 0
@@ -285,7 +285,7 @@ void bz_operation(uint16_t hz, uint16_t count)
 	us = (1000.0/(2*hz) - ms) * 1000;				// 1개 펄스의 ON 또는 OFF의 us 단위 시간
 	for(i=0; i<count; i++)
 	{
-		PORTB ^= (1 << PORTB2);						// BUzzer ON - OFF
+		PORTB ^= (1 << PORTB2);						// Buzzer ON - OFF
  172:	14 e0       	ldi	r17, 0x04	; 4
 	uint8_t __ticks;
 	double __tmp2 ;
@@ -527,7 +527,7 @@ void bz_operation(uint16_t hz, uint16_t count)
  286:	09 f0       	breq	.+2      	; 0x28a <__stack+0x12b>
  288:	81 cf       	rjmp	.-254    	; 0x18c <__stack+0x2d>
 	{
-		PORTB ^= (1 << PORTB2);						// BUzzer ON - OFF
+		PORTB ^= (1 << PORTB2);						// Buzzer ON - OFF
 		_delay_us(us);								// (us)us 동안 delay
 	}
 }
@@ -605,7 +605,7 @@ ISR(PCINT1_vect)
  2fc:	91 11       	cpse	r25, r1
  2fe:	80 e0       	ldi	r24, 0x00	; 0
  300:	80 93 63 00 	sts	0x0063, r24	; 0x800063 <state_ON>
-				bz_operation(1047, 150);
+				bz_operation(NOTE_C6, 150);
  304:	66 e9       	ldi	r22, 0x96	; 150
  306:	70 e0       	ldi	r23, 0x00	; 0
  308:	87 e1       	ldi	r24, 0x17	; 23
@@ -638,7 +638,7 @@ ISR(PCINT1_vect)
 				select_pow(state_Power);
  334:	80 91 62 00 	lds	r24, 0x0062	; 0x800062 <state_Power>
  338:	ad de       	rcall	.-678    	; 0x94 <select_pow>
-				bz_operation(1047, 150);
+				bz_operation(NOTE_C6, 150);
  33a:	66 e9       	ldi	r22, 0x96	; 150
  33c:	70 e0       	ldi	r23, 0x00	; 0
  33e:	87 e1       	ldi	r24, 0x17	; 23
@@ -734,6 +734,7 @@ int main(void)
 {
 	UV_util_init();
  3a2:	e6 df       	rcall	.-52     	; 0x370 <UV_util_init>
+	
 	sei();
  3a4:	78 94       	sei
 			ON_STATE;							// 상태 LED ON
@@ -743,7 +744,7 @@ int main(void)
 		{
 			TCCR0B = (1 << CS01);				// 타이머 ON
  3a6:	92 e0       	ldi	r25, 0x02	; 2
-	UV_util_init();
+	
 	sei();
 	
     while (1) 

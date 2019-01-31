@@ -123,6 +123,9 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="pitches.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="UV_def.h">
       <SubType>compile</SubType>
     </Compile>
