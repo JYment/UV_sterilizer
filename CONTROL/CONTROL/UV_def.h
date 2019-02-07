@@ -12,9 +12,6 @@
 #define ON				1
 #define OFF				0
 
-#define UV_LOW			PORTA0
-#define UV_MEDIUM		PORTA1
-#define UV_HIGH			PORTA2
 #define BUZZER			PORTB2
 #define STATE_LED		PORTA3
 #define WS2812_LED		PORTA7

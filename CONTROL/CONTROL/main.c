@@ -57,33 +57,27 @@ ISR(PCINT1_vect)
 	}
 }
 
-ISR(TIM0_COMPA_vect) 
-{	
+ISR(TIM1_COMPA_vect)
+{
 	cnt++;
 	if(state_ON == ON)
 	{
 		if(cnt >= 1999)								// 0.5s CNT
-		{	
+		{
 			if(sec_cnt < 1800)						// 900s (15min) CNT
 			{
 				PORTA ^= (1 << STATE_LED);
 				switch(state_Power)
 				{
 					case POW_LOW:
-						PORTA |= (1 << PORTA0);
-						PORTA &= ~(1 << PORTA1);
-						PORTA &= ~(1 << PORTA2);
-						break;
+					OCR0A = 0;
+					break;
 					case POW_MEDIUM:
-						PORTA |= (1 << PORTA1);
-						PORTA &= ~(1 << PORTA0);
-						PORTA &= ~(1 << PORTA2);
-						break;
+					OCR0A = 10;
+					break;
 					case POW_HIGH:
-						PORTA |= (1 << PORTA2);
-						PORTA &= ~(1 << PORTA1);
-						PORTA &= ~(1 << PORTA0);
-						break;
+					OCR0A = 20;
+					break;
 				}
 				
 				sec_cnt++;
@@ -98,11 +92,8 @@ ISR(TIM0_COMPA_vect)
 	}
 	else
 	{
-		PORTA &= ~(1 << PORTA2);
-		PORTA &= ~(1 << PORTA1);
-		PORTA &= ~(1 << PORTA0);
-		sec_cnt = 0;	
-		cnt = 0;	
+		sec_cnt = 0;
+		cnt = 0;
 	}
 }
 
@@ -129,7 +120,7 @@ void bz_operation(uint16_t hz, uint16_t count)
 	us = (1000.0/(2*hz) - ms) * 1000;				// 1개 펄스의 ON 또는 OFF의 us 단위 시간
 	for(i=0; i<count; i++)
 	{
-		PORTB ^= (1 << PORTB2);						// Buzzer ON - OFF
+		PORTA ^= (1 << PORTA2);						// Buzzer ON - OFF
 		_delay_us(us);								// (us)us 동안 delay
 	}
 }
@@ -137,7 +128,7 @@ void bz_operation(uint16_t hz, uint16_t count)
 void UV_util_init(void)
 {
 	// OUTPUT init
-	DDRA |=	(1 << PORTA0) | (1 << PORTA1) | (1 << PORTA2) | (1 << PORTA3) | (1 << PORTA7);
+	DDRA |=	(1 << PORTA3) | (1 << PORTA7) | (1 << PORTA0);
 	DDRB |= (1 << PORTB2);
 
 	// PIN Change Interrupt
@@ -146,10 +137,15 @@ void UV_util_init(void)
 	PCMSK1 = (1 << PCINT8) | (1 << PCINT9);
 	
 	// TIMER0 8bit
-	TCCR0A = (1 << WGM01);						// CTC MODE
-	TIMSK0 = (1 << OCIE0A);						// TIM0 COMP INT Enable
-	OCR0A = 249;								// F_CPU/(2*Prescale*(1+249))
+	TCCR0A = (1 << COM0A1) | (1 << WGM01) | (1 << WGM00);		// FAST PWM MODE
+	TCCR0B = (1 << CS01);										// F_CPU/(2*Prescale*(1+249))
+	OCR0A = 0;
 
+	// TIMER1 16bit
+	TCCR1B = (1 << WGM12);
+	TIMSK1 = (1 << OCIE1A);
+	OCR1A = 249;
+	
 	ws2812b_init();
 	_delay_ms(10);
 	ws2812b_show_color(1, 0, 255, 0);
@@ -158,7 +154,6 @@ void UV_util_init(void)
 int main(void)
 {
 	UV_util_init();
-	
 	sei();
 	
     while (1) 
@@ -166,14 +161,11 @@ int main(void)
 		if(state_ON == OFF)
 		{
 			ON_STATE;							// 상태 LED ON
-			PORTA &= ~(1 << PORTA0);
-			PORTA &= ~(1 << PORTA1);
-			PORTA &= ~(1 << PORTA2);
-			TCCR0B = 0;							// 타이머 OFF		
+			TCCR1B &= ~(1 << CS11);
 		}
 		else
 		{
-			TCCR0B = (1 << CS01);				// 타이머 ON
+			TCCR1B |= (1 << CS11);				// 타이머 ON
 		}
 	}
 }
