@@ -70,13 +70,13 @@ ISR(TIM1_COMPA_vect)
 				switch(state_Power)
 				{
 					case POW_LOW:
-					OCR0A = 0;
+					OCR0A = 100;
 					break;
 					case POW_MEDIUM:
-					OCR0A = 10;
+					OCR0A = 70;
 					break;
 					case POW_HIGH:
-					OCR0A = 20;
+					OCR0A = 30;
 					break;
 				}
 				
@@ -120,7 +120,7 @@ void bz_operation(uint16_t hz, uint16_t count)
 	us = (1000.0/(2*hz) - ms) * 1000;				// 1개 펄스의 ON 또는 OFF의 us 단위 시간
 	for(i=0; i<count; i++)
 	{
-		PORTA ^= (1 << PORTA2);						// Buzzer ON - OFF
+		PORTA ^= (1 << PORTA0);						// Buzzer ON - OFF
 		_delay_us(us);								// (us)us 동안 delay
 	}
 }
@@ -139,7 +139,7 @@ void UV_util_init(void)
 	// TIMER0 8bit
 	TCCR0A = (1 << COM0A1) | (1 << WGM01) | (1 << WGM00);		// FAST PWM MODE
 	TCCR0B = (1 << CS01);										// F_CPU/(2*Prescale*(1+249))
-	OCR0A = 0;
+	
 
 	// TIMER1 16bit
 	TCCR1B = (1 << WGM12);
@@ -162,6 +162,8 @@ int main(void)
 		{
 			ON_STATE;							// 상태 LED ON
 			TCCR1B &= ~(1 << CS11);
+			OCR0A = 0;
+			PORTB &= ~(1 << PORTB2);
 		}
 		else
 		{
